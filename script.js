@@ -13,6 +13,13 @@
     });
   };
 
+  var header = document.querySelector("header");
+  var onScroll = function () {
+    header.classList.toggle("scrolled", window.scrollY > 20);
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
   document
     .getElementById("btnVerificar")
     .addEventListener("click", function () {
@@ -101,4 +108,118 @@
     });
     document.getElementById("stForm").style.display = "block";
   });
+
+  // Fundo do hero: uma coluna por mês; o trecho acima do teto fica laranja
+  // (cópia recortada acima da linha). O estilo e as animações estão em style.css.
+  var heroAnim = document.querySelector(".hero-anim");
+  if (heroAnim) {
+    var NS = "http://www.w3.org/2000/svg";
+    var svgEl = function (tag, attrs, parent) {
+      var e = document.createElementNS(NS, tag);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      parent.appendChild(e);
+      return e;
+    };
+    var drawTeto = function (intro) {
+      var w = heroAnim.clientWidth,
+        h = heroAnim.clientHeight;
+      var seed = 7;
+      var rand = function () {
+        seed = (seed * 16807) % 2147483647;
+        return (seed - 1) / 2147483646;
+      };
+      heroAnim.innerHTML = "";
+      heroAnim.classList.toggle("no-intro", !intro);
+      var svg = svgEl("svg", { viewBox: "0 0 " + w + " " + h, preserveAspectRatio: "none" }, heroAnim);
+      var lineY = Math.round(h * 0.64);
+      var clip = svgEl("clipPath", { id: "acimaDoTeto" }, svgEl("defs", {}, svg));
+      svgEl("rect", { x: 0, y: 0, width: w, height: lineY }, clip);
+      var base = svgEl("g", { class: "bars-base" }, svg);
+      var over = svgEl("g", { class: "bars-over", "clip-path": "url(#acimaDoTeto)" }, svg);
+      var gap = w > 900 ? 20 : 14,
+        bw = 3,
+        level = 0.3;
+      for (var i = 0; i < Math.floor(w / gap); i++) {
+        level = Math.min(0.54, Math.max(0.12, level + (rand() - 0.47) * 0.14));
+        var bh = h * level,
+          x = i * gap + (gap - bw) / 2;
+        var rise = "animation-delay:" + (100 + i * 12) + "ms";
+        var breathe = "animation-delay:" + -rand() * 2.2 + "s";
+        [base, over].forEach(function (g) {
+          var bar = svgEl("g", { class: "bar", style: rise }, g);
+          svgEl("rect", { class: "breathe", x: x, y: h - bh, width: bw, height: bh, rx: bw / 2, style: breathe }, bar);
+        });
+      }
+      svgEl("line", { class: "teto-line", x1: 0, x2: w, y1: lineY, y2: lineY }, svg);
+      svgEl("text", { class: "teto-label", x: w - 16, y: lineY - 10, "text-anchor": "end" }, svg).textContent =
+        "Teto do INSS";
+    };
+    drawTeto(true);
+    // Redesenha sem repetir a entrada quando o hero muda de tamanho
+    // (janela redimensionada, ou troca entre formulário e resultado).
+    var lastSize = heroAnim.clientWidth + "x" + heroAnim.clientHeight;
+    if (window.ResizeObserver) {
+      var redraw;
+      new ResizeObserver(function () {
+        var size = heroAnim.clientWidth + "x" + heroAnim.clientHeight;
+        if (size === lastSize) return;
+        lastSize = size;
+        clearTimeout(redraw);
+        redraw = setTimeout(function () {
+          drawTeto(false);
+        }, 150);
+      }).observe(heroAnim);
+    }
+  }
+
+  // Entrada ao rolar: cada elemento sobe e aparece ao entrar na tela; itens do
+  // mesmo grupo (cards, etapas, perguntas) entram em sequência.
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduceMotion && window.IntersectionObserver) {
+    var revealSelectors = [
+      ".statline .wrap",
+      "section:not(.hero) .sec-eyebrow",
+      "section:not(.hero) h2",
+      ".section-lead",
+      ".card",
+      ".step",
+      ".profile",
+      ".promise-card",
+      ".btn-cta",
+      ".faq-list details",
+      ".about-photo",
+      ".about .role",
+      ".about p:not(.role)",
+      ".astat",
+    ];
+    var revealEls = document.querySelectorAll(revealSelectors.join(","));
+    var groupCount = new Map();
+    Array.prototype.forEach.call(revealEls, function (el) {
+      var n = groupCount.get(el.parentNode) || 0;
+      groupCount.set(el.parentNode, n + 1);
+      el.dataset.revealDelay = Math.min(n, 5) * 90;
+      el.style.setProperty("--reveal-delay", el.dataset.revealDelay + "ms");
+      el.classList.add("reveal");
+    });
+    var revealer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          el.classList.add("visible");
+          revealer.unobserve(el);
+          // Ao fim da entrada, devolve ao elemento as próprias transições (hover dos cards).
+          setTimeout(function () {
+            el.classList.remove("reveal", "visible");
+            el.style.removeProperty("--reveal-delay");
+            delete el.dataset.revealDelay;
+          }, +el.dataset.revealDelay + 800);
+        });
+      },
+      { rootMargin: "0px 0px -10% 0px", threshold: 0.1 }
+    );
+    Array.prototype.forEach.call(revealEls, function (el) {
+      revealer.observe(el);
+    });
+  }
 })();

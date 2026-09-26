@@ -12,9 +12,9 @@ The `src/` directory is empty and unused — do not assume a build pipeline exis
 
 There is no build system, package manager, or framework — just three plain files, loaded directly by the browser with no bundler:
 
-- **[style.css](style.css)**: all CSS, using custom properties defined on `:root` (colors like `--gold`, `--bg`, `--text`, etc.) for the dark/gold visual theme. Section-level classes (`.hero`, `.alt-white`, `.alt-tint`, `.promise`, `.midcta`, `.about`) alternate background treatments down the page.
+- **[style.css](style.css)**: all CSS, using custom properties defined on `:root` for a graphite/orange theme modeled on lomazy.com.br: `--black`/`--black2`/`--black3` backgrounds, `--orange` accent, `--border*` hairlines, and `--font-display` (Barlow Condensed, uppercase headings) / `--font-body` (Barlow). Sections default to `--black`; `section.alt` switches to `--black2`, and `.centered` centers a section's eyebrow + `h2`. Other section-level classes: `.hero`, `.promise`, `.midcta`, `.about`. The fixed `<header>` gets `.scrolled` from `script.js` once the page scrolls.
 - **[index.html](index.html)**: a sequence of `<section>` elements in narrative order — hero/lead form → problem explanation → 3-step process → audience fit → risk-free promise → mid-page CTA → FAQ → lawyer bio → footer. Links `style.css` in `<head>` and loads `script.js` before `</body>`.
-- **[script.js](script.js)**: IIFE, vanilla JS, no dependencies; drives the lead-capture flow.
+- **[script.js](script.js)**: IIFE, vanilla JS, no dependencies; drives the lead-capture flow, and draws the hero background animation into `.hero-anim` (an SVG of monthly bars with a dashed "Teto do INSS" line; a clipped orange copy of the bars shows the part above the line). Keyframes and colors live in `style.css`; the SVG is redrawn without the intro (`.no-intro`) when the hero resizes. It also adds scroll-reveal: elements matched by `revealSelectors` get `.reveal` (hidden, via the `translate` property so card hover `transform`s still work), then `.visible` from an IntersectionObserver, with siblings staggered via `--reveal-delay`; both classes are removed after the entrance. Skipped entirely under `prefers-reduced-motion`. To animate a new element on scroll, add its selector to that list.
 
 ### Lead-capture flow (the core interactive piece)
 
@@ -30,7 +30,7 @@ The WhatsApp target number is hardcoded as `5581999898760` in the `wa.me` link i
 
 ## Working in these files
 
-- Images live in [img/](img/): `logo.png` (used for both the header and footer logo — same file, referenced twice) and `davi-lima.jpg` (lawyer photo in the about section). Reference them by relative path; don't reintroduce inline base64 data URIs.
+- Images live in [img/](img/): `logo-horizontal.svg` (header and footer logo — same file, referenced twice; text converted to outlines, transparent background, metallic-orange gradients), the favicon set (`favicon.svg` = the logo symbol centered in a square, `favicon-192.png`, `apple-touch-icon.png`, plus `/favicon.ico` at the repo root with 16/32px PNGs; bump the `?v=` query in `<head>` when they change so browsers drop the cached icon), and `davi-lima.jpg` (lawyer photo in the about section). Reference them by relative path; don't reintroduce inline base64 data URIs.
 - Element IDs are the wiring between `index.html` and `script.js`; if you rename or restructure form/result elements, update the corresponding `getElementById` calls in `script.js`.
 - Copy is in Brazilian Portuguese and addresses doctors specifically (medical multi-employment is the whole premise) — preserve tone and domain framing when editing copy.
 - No tests, linter, or build/dev-server command exist for this repo. Verify changes by opening [index.html](index.html) directly in a browser — it loads `style.css`, `script.js`, and `img/*` via relative paths, so keep the directory layout intact.
