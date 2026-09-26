@@ -14,7 +14,7 @@ There is no build system, package manager, or framework — just three plain fil
 
 - **[style.css](style.css)**: all CSS, using custom properties defined on `:root` for a graphite/orange theme modeled on lomazy.com.br: `--black`/`--black2`/`--black3` backgrounds, `--orange` accent, `--border*` hairlines, and `--font-display` (Barlow Condensed, uppercase headings) / `--font-body` (Barlow). Sections default to `--black`; `section.alt` switches to `--black2`, and `.centered` centers a section's eyebrow + `h2`. Other section-level classes: `.hero`, `.promise`, `.midcta`, `.about`. The fixed `<header>` gets `.scrolled` from `script.js` once the page scrolls.
 - **[index.html](index.html)**: a sequence of `<section>` elements in narrative order — hero/lead form → problem explanation → 3-step process → audience fit → risk-free promise → mid-page CTA → FAQ → lawyer bio → footer. Links `style.css` in `<head>` and loads `script.js` before `</body>`.
-- **[script.js](script.js)**: IIFE, vanilla JS, no dependencies; drives the lead-capture flow.
+- **[script.js](script.js)**: IIFE, vanilla JS, no dependencies; drives the lead-capture flow, and draws the hero background animation into `.hero-anim` (an SVG of monthly bars with a dashed "Teto do INSS" line; a clipped orange copy of the bars shows the part above the line). Keyframes and colors live in `style.css`; the SVG is redrawn without the intro (`.no-intro`) when the hero resizes.
 
 ### Lead-capture flow (the core interactive piece)
 

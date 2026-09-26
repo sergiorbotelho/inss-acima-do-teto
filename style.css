@@ -142,21 +142,77 @@ header.scrolled {
     transparent 70%
   );
 }
-.hero::after {
-  content: "";
+/* Fundo do hero: colunas mensais (desenhadas em script.js) sobem e o
+   trecho acima da linha do teto do INSS fica laranja. */
+.hero-anim {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.5) 1px, transparent 1.5px),
-    radial-gradient(circle, rgba(255, 106, 0, 0.6) 1px, transparent 1.5px);
-  background-size:
-    137px 113px,
-    211px 173px;
-  background-position:
-    0 0,
-    60px 40px;
-  opacity: 0.18;
+  overflow: hidden;
+}
+.hero-anim svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.bars-base {
+  fill: rgba(255, 255, 255, 0.045);
+}
+.bars-over {
+  fill: rgba(255, 106, 0, 0.26);
+}
+.hero-anim .bar,
+.hero-anim .breathe {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.hero-anim .bar {
+  animation: barRise 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.hero-anim .breathe {
+  animation: barBreathe 2.2s ease-in-out infinite alternate;
+}
+.teto-line {
+  stroke: rgba(255, 255, 255, 0.28);
+  stroke-width: 1;
+  stroke-dasharray: 4 6;
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  animation: lineDraw 1.2s ease-out both;
+}
+.teto-label {
+  font: 500 12px var(--font-body);
+  letter-spacing: 0.04em;
+  fill: rgba(255, 255, 255, 0.4);
+  animation: fadeIn 0.8s ease 1s both;
+}
+.hero-anim.no-intro .bar,
+.hero-anim.no-intro .teto-line,
+.hero-anim.no-intro .teto-label {
+  animation: none;
+}
+@keyframes barRise {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes barBreathe {
+  from {
+    transform: scaleY(0.9);
+  }
+  to {
+    transform: scaleY(1.06);
+  }
+}
+@keyframes lineDraw {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
 }
 .hero .wrap {
   position: relative;
