@@ -171,4 +171,55 @@
       }).observe(heroAnim);
     }
   }
+
+  // Entrada ao rolar: cada elemento sobe e aparece ao entrar na tela; itens do
+  // mesmo grupo (cards, etapas, perguntas) entram em sequência.
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduceMotion && window.IntersectionObserver) {
+    var revealSelectors = [
+      ".statline .wrap",
+      "section:not(.hero) .sec-eyebrow",
+      "section:not(.hero) h2",
+      ".section-lead",
+      ".card",
+      ".step",
+      ".profile",
+      ".promise-card",
+      ".btn-cta",
+      ".faq-list details",
+      ".about-photo",
+      ".about .role",
+      ".about p:not(.role)",
+      ".astat",
+    ];
+    var revealEls = document.querySelectorAll(revealSelectors.join(","));
+    var groupCount = new Map();
+    Array.prototype.forEach.call(revealEls, function (el) {
+      var n = groupCount.get(el.parentNode) || 0;
+      groupCount.set(el.parentNode, n + 1);
+      el.dataset.revealDelay = Math.min(n, 5) * 90;
+      el.style.setProperty("--reveal-delay", el.dataset.revealDelay + "ms");
+      el.classList.add("reveal");
+    });
+    var revealer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          el.classList.add("visible");
+          revealer.unobserve(el);
+          // Ao fim da entrada, devolve ao elemento as próprias transições (hover dos cards).
+          setTimeout(function () {
+            el.classList.remove("reveal", "visible");
+            el.style.removeProperty("--reveal-delay");
+            delete el.dataset.revealDelay;
+          }, +el.dataset.revealDelay + 800);
+        });
+      },
+      { rootMargin: "0px 0px -10% 0px", threshold: 0.1 }
+    );
+    Array.prototype.forEach.call(revealEls, function (el) {
+      revealer.observe(el);
+    });
+  }
 })();

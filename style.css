@@ -1268,6 +1268,22 @@ footer a:hover {
     display: none;
   }
 }
+/* ---------- Entrada ao rolar ----------
+   script.js marca os elementos com .reveal e acrescenta .visible quando entram
+   na tela. Usa `translate` (e não `transform`) para não brigar com o hover dos
+   cards; ao terminar, o script remove as duas classes. */
+.reveal {
+  opacity: 0;
+  translate: 0 28px;
+  transition:
+    opacity 0.7s ease var(--reveal-delay, 0s),
+    translate 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--reveal-delay, 0s);
+}
+.reveal.visible {
+  opacity: 1;
+  translate: 0 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
