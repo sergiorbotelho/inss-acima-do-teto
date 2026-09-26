@@ -30,7 +30,7 @@ The WhatsApp target number is hardcoded as `5581999898760` in the `wa.me` link i
 
 ## Working in these files
 
-- Images live in [img/](img/): `logo.png` (used for both the header and footer logo — same file, referenced twice) and `davi-lima.jpg` (lawyer photo in the about section). Reference them by relative path; don't reintroduce inline base64 data URIs.
+- Images live in [img/](img/): `logo-horizontal.svg` (header and footer logo — same file, referenced twice; text converted to outlines, transparent background, metallic-orange gradients), the favicon set (`favicon.svg` = the logo symbol centered in a square, `favicon-192.png`, `apple-touch-icon.png`, plus `/favicon.ico` at the repo root with 16/32px PNGs; bump the `?v=` query in `<head>` when they change so browsers drop the cached icon), and `davi-lima.jpg` (lawyer photo in the about section). Reference them by relative path; don't reintroduce inline base64 data URIs.
 - Element IDs are the wiring between `index.html` and `script.js`; if you rename or restructure form/result elements, update the corresponding `getElementById` calls in `script.js`.
 - Copy is in Brazilian Portuguese and addresses doctors specifically (medical multi-employment is the whole premise) — preserve tone and domain framing when editing copy.
 - No tests, linter, or build/dev-server command exist for this repo. Verify changes by opening [index.html](index.html) directly in a browser — it loads `style.css`, `script.js`, and `img/*` via relative paths, so keep the directory layout intact.
