@@ -12,7 +12,7 @@ The `src/` directory is empty and unused — do not assume a build pipeline exis
 
 There is no build system, package manager, or framework — just three plain files, loaded directly by the browser with no bundler:
 
-- **[style.css](style.css)**: all CSS, using custom properties defined on `:root` (colors like `--gold`, `--bg`, `--text`, etc.) for the dark/gold visual theme. Section-level classes (`.hero`, `.alt-white`, `.alt-tint`, `.promise`, `.midcta`, `.about`) alternate background treatments down the page.
+- **[style.css](style.css)**: all CSS, using custom properties defined on `:root` for a graphite/orange theme modeled on lomazy.com.br: `--black`/`--black2`/`--black3` backgrounds, `--orange` accent, `--border*` hairlines, and `--font-display` (Barlow Condensed, uppercase headings) / `--font-body` (Barlow). Sections default to `--black`; `section.alt` switches to `--black2`, and `.centered` centers a section's eyebrow + `h2`. Other section-level classes: `.hero`, `.promise`, `.midcta`, `.about`. The fixed `<header>` gets `.scrolled` from `script.js` once the page scrolls.
 - **[index.html](index.html)**: a sequence of `<section>` elements in narrative order — hero/lead form → problem explanation → 3-step process → audience fit → risk-free promise → mid-page CTA → FAQ → lawyer bio → footer. Links `style.css` in `<head>` and loads `script.js` before `</body>`.
 - **[script.js](script.js)**: IIFE, vanilla JS, no dependencies; drives the lead-capture flow.
 

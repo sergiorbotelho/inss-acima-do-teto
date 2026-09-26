@@ -13,6 +13,13 @@
     });
   };
 
+  var header = document.querySelector("header");
+  var onScroll = function () {
+    header.classList.toggle("scrolled", window.scrollY > 20);
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
   document
     .getElementById("btnVerificar")
     .addEventListener("click", function () {
